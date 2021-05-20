@@ -9,7 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MiniOLX">
-        <activity android:name=".MainActivity">
+        <activity android:name=".SignInActivity" android:label="@string/sign_in"/>
+        <activity
+            android:name=".SplashActivity"
+            android:label="@string/sign_up" />
+        <activity android:name=".RegisterActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
