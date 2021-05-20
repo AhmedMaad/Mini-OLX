@@ -9,6 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MiniOLX">
+        <activity android:name=".EmailVerificationActivity"></activity>
         <activity
             android:name=".SignInActivity"
             android:label="@string/sign_in" />
