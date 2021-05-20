@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "550546992827",
+    "project_id": "mini-olx-78d95",
+    "storage_bucket": "mini-olx-78d95.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:550546992827:android:a1a2b2113ca6bbc057039e",
+        "android_client_info": {
+          "package_name": "com.example.miniolx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "550546992827-f8vdsi0qloh1q05jj6si3lvv9fep32sk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVWRTvg244X6BR1xbmUWHx9nISCjxZETM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "550546992827-f8vdsi0qloh1q05jj6si3lvv9fep32sk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
