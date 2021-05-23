@@ -32,4 +32,5 @@
     <string name="email_not_recorded">Sorry, this email is not recorded</string>
     <string name="click_here_after_email_verification">Click here after Email verification</string>
     <string name="logout">Logout</string>
+    <string name="logged_out">User Logged Out Successfully.</string>
 </resources>
