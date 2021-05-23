@@ -1,5 +1,6 @@
 package com.example.miniolx;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -11,12 +12,23 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class RegisterActivity extends AppCompatActivity {
 
     private String password;
+    String firstName;
+    String lastName;
+    String username;
+    String email;
     private TextInputEditText firstNameET;
     private TextInputEditText lastNameET;
     private TextInputEditText userNameET;
@@ -31,6 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        setTitle(R.string.sign_up);
 
         firstNameET = findViewById(R.id.et_first_name);
         lastNameET = findViewById(R.id.et_last_name);
@@ -107,40 +120,16 @@ public class RegisterActivity extends AppCompatActivity {
         finish();
     }
 
-    private void verifyEmail(/*final FirebaseUser user, final ProgressBar pbSignUp, final Button btnSignup*/) {
-        /*UserModel userModel = new UserModel();
-        userModel.verifyEmailAddress(user, new GeneralHandler() {
-            @Override
-            public <T> void onSuccess(Task<T> task) {
-                pbSignUp.setVisibility(View.GONE);
-                btnSignup.setVisibility(View.VISIBLE);
-                Log.d("json", "Email sent to: " + user.getEmail());
-                //Go to verification email activity
-                Intent i = new Intent(getContext(), EmailVerificationActivity.class);
-                i.putExtra("Email",user.getEmail());
-                i.putExtra("Password", password);
-                startActivity(i);
-                getActivity().finish();
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                pbSignUp.setVisibility(View.GONE);
-                btnSignup.setVisibility(View.VISIBLE);
-                Log.d("json", "Cannot verify email: " + e.getMessage());
-            }
-        });*/
-    }
-
     public void signUp(View view) {
-        String firstName = firstNameET.getText().toString();
-        String lastName = lastNameET.getText().toString();
-        String username = userNameET.getText().toString();
-        String email = emailET.getText().toString();
+        firstName = firstNameET.getText().toString();
+        lastName = lastNameET.getText().toString();
+        username = userNameET.getText().toString();
+        email = emailET.getText().toString();
         password = passwordET.getText().toString();
 
         Validation validation = new Validation();
-        int validationResult = validation.validateFields(firstName, lastName, username, email, password);
+        int validationResult = validation.validateFields(firstName, lastName, username
+                , email, password);
         switch (validationResult) {
             case 0:
                 Toast.makeText(this, R.string.missing_fileds, Toast.LENGTH_SHORT).show();
@@ -148,28 +137,61 @@ public class RegisterActivity extends AppCompatActivity {
             case 1:
                 signUpPB.setVisibility(View.VISIBLE);
                 signUpBtn.setVisibility(View.INVISIBLE);
-                /*final UserModel userModel = new UserModel();
-                userModel.addNewUser(email, password, new GeneralHandler() {
-                    @Override
-                    public <T> void onSuccess(Task<T> task) {
-                        Object authResultGeneric = task.getResult();
-                        AuthResult authResult = AuthResult.class.cast(authResultGeneric);
-                        verifyEmail(authResult.getUser(), signupBinding.pbSignUp
-                                , signupBinding.btnSignup);
-                    }
-
-                    @Override
-                    public void onFailure(Exception e) {
-                        signupBinding.pbSignUp.setVisibility(View.GONE);
-                        signupBinding.btnSignup.setVisibility(View.VISIBLE);
-                        Toast.makeText(getContext(), R.string.user_failed, Toast.LENGTH_SHORT).show();
-                        Log.d("json", "Error: " + e.getMessage());
-                    }
-                });
-*/
+                addNewUser();
                 break;
         }
     }
 
+    //Creating a new user with Firebase Authentication
+    public void addNewUser() {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Util.U_ID = task.getResult().getUser().getUid();
+                            verifyEmailAddress(task.getResult().getUser());
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(RegisterActivity.this, R.string.user_failed, Toast.LENGTH_SHORT).show();
+                        signUpPB.setVisibility(View.INVISIBLE);
+                        signUpBtn.setVisibility(View.VISIBLE);
+                    }
+                });
+    }
+
+    //Verify email address after adding a new user with firebase authentication only
+    public void verifyEmailAddress(FirebaseUser user) {
+        user.sendEmailVerification()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful())
+                            createUserObject();
+                    }
+                });
+    }
+
+    private void createUserObject() {
+        UserModel user = new UserModel(firstName, lastName, username, email);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db
+                .collection("users")
+                .document(Util.U_ID)
+                .set(user)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(this, R.string.user_added, Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(this, EmailVerificationActivity.class);
+                    i.putExtra("Email", user.getEmail());
+                    i.putExtra("Password", password);
+                    startActivity(i);
+                    finish();
+                });
+    }
 
 }

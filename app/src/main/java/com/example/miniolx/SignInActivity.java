@@ -1,9 +1,11 @@
 package com.example.miniolx;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,8 +13,14 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -23,6 +31,8 @@ public class SignInActivity extends AppCompatActivity {
     private TextInputEditText passwordET;
     private Button signInBtn;
     private ProgressBar loginPB;
+    private String email;
+    private String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +45,6 @@ public class SignInActivity extends AppCompatActivity {
         passwordET = findViewById(R.id.et_password);
         signInBtn = findViewById(R.id.btn_signin);
         loginPB = findViewById(R.id.pb_login);
-
 
     }
 
@@ -54,6 +63,61 @@ public class SignInActivity extends AppCompatActivity {
         ++visibilityCounter;
     }
 
+    public void signIn(View view) {
+        email = emailET.getText().toString();
+        password = passwordET.getText().toString();
+
+        Validation validation = new Validation();
+        int validationResult = validation.validateFields(email, password);
+        switch (validationResult) {
+            case 0:
+                Toast.makeText(this, R.string.missing_fileds, Toast.LENGTH_SHORT).show();
+                break;
+            case 1:
+                loginPB.setVisibility(View.VISIBLE);
+                signInBtn.setVisibility(View.INVISIBLE);
+                loginWithFirebase();
+                break;
+        }
+    }
+
+    public void loginWithFirebase() {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = task.getResult().getUser();
+                            Log.d("trace", "Email found: " + user.getEmail());
+                            if (user.isEmailVerified()) {
+                                //Go to home page
+                                Intent intent = new Intent(SignInActivity.this
+                                        , HomeActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Intent intent = new Intent(SignInActivity.this
+                                        , EmailVerificationActivity.class);
+                                intent.putExtra("Email", user.getEmail());
+                                intent.putExtra("Password", password);
+                                startActivity(intent);
+                                finish();
+                            }
+                        } else
+                            Toast.makeText(SignInActivity.this, R.string.wrong_email_password, Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        loginPB.setVisibility(View.GONE);
+                        signInBtn.setVisibility(View.VISIBLE);
+                        Log.d("trace", "Exception: " + e.getMessage());
+                    }
+                });
+    }
+
     public void sendPasswordResetLink(View view) {
         TextInputEditText emailET = findViewById(R.id.et_reset_email);
         String writtenEmail = emailET.getText().toString();
@@ -66,71 +130,38 @@ public class SignInActivity extends AppCompatActivity {
             case 1:
                 resetPasswordPB.setVisibility(View.VISIBLE);
                 resetPasswordBtn.setVisibility(View.INVISIBLE);
-                /*UserModel userModel = new UserModel();
-                userModel.resetPassword(writtenEmail, new GeneralHandler() {
-                    @Override
-                    public <T> void onSuccess(Task<T> task) {
-                        loginBinding.pbPasswordReset.setVisibility(View.INVISIBLE);
-                        loginBinding.btnPasswordResetLink.setVisibility(View.VISIBLE);
-                        Toast.makeText(getContext(), R.string.check_email, Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(Exception e) {
-                        loginBinding.pbPasswordReset.setVisibility(View.INVISIBLE);
-                        loginBinding.btnPasswordResetLink.setVisibility(View.VISIBLE);
-                        Toast.makeText(getContext(), R.string.email_not_recorded, Toast.LENGTH_SHORT).show();
-                        Log.d("json", "Error: " + e.getMessage());
-                    }
-                });*/
+                resetPassword(writtenEmail);
                 break;
         }
     }
 
-    public void signIn(View view) {
-        String email = emailET.getText().toString();
-        String password = passwordET.getText().toString();
+    //Reset password with Firebase authentication only
+    public void resetPassword(String emailAddress) {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
 
-        Validation validation = new Validation();
-        int validationResult = validation.validateFields(email, password);
-        switch (validationResult) {
-            case 0:
-                Toast.makeText(this, R.string.missing_fileds, Toast.LENGTH_SHORT).show();
-                break;
-            case 1:
-                loginPB.setVisibility(View.VISIBLE);
-                signInBtn.setVisibility(View.INVISIBLE);
-                /*UserModel userModel = new UserModel();
-                userModel.loginWithFirebase(email, password, new LoginHandler() {
+        auth.sendPasswordResetEmail(emailAddress)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public <T> void onSuccess(Task<T> task) {
-                        loginBinding.pbLogin.setVisibility(View.GONE);
-                        loginBinding.btnSignin.setVisibility(View.VISIBLE);
+                    public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Object authResultGeneric = task.getResult();
-                            AuthResult authResult = AuthResult.class.cast(authResultGeneric);
-                            FirebaseUser user = authResult.getUser();
-                            Log.d("json", "Email found: " + user.getEmail());
-                            if (user.isEmailVerified()) {
-                                //Toast.makeText(getContext(), R.string.logged_successfully, Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(getContext(), HomeActivity.class);
-                                startActivity(intent);
-                                getActivity().finish();
-                            } else
-                                Toast.makeText(getContext(), R.string.verify_email, Toast.LENGTH_SHORT).show();
-                        } else
-                            Toast.makeText(getContext(), R.string.wrong_email_password, Toast.LENGTH_SHORT).show();
+                            resetPasswordPB.setVisibility(View.INVISIBLE);
+                            resetPasswordBtn.setVisibility(View.VISIBLE);
+                            Toast.makeText(SignInActivity.this, R.string.check_email
+                                    , Toast.LENGTH_SHORT).show();
+                        }
                     }
-
+                })
+                .addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(Exception e) {
-                        loginBinding.pbLogin.setVisibility(View.GONE);
-                        loginBinding.btnSignin.setVisibility(View.VISIBLE);
-                        Log.d("json", "Exception: " + e.getMessage());
+                    public void onFailure(@NonNull Exception e) {
+                        resetPasswordPB.setVisibility(View.INVISIBLE);
+                        resetPasswordBtn.setVisibility(View.VISIBLE);
+                        Toast.makeText(SignInActivity.this, R.string.email_not_recorded
+                                , Toast.LENGTH_SHORT).show();
+                        Log.d("json", "Error: " + e.getMessage());
                     }
                 });
-                break;*/
-        }
+
     }
 
 }
