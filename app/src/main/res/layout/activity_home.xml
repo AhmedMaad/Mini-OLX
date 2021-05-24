@@ -6,12 +6,57 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
+    <TextView
+        android:id="@+id/tv_filter_by"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Filter by:"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@id/et_search_place"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/et_search_place"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Enter place location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_filter_by"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/rg"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/et_search_place"
+        app:layout_constraintTop_toBottomOf="@id/et_search_place">
+
+        <RadioButton
+            android:id="@+id/rb_high_to_low"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Price (Low to High)" />
+
+        <RadioButton
+            android:id="@+id/rb_low_to_high"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Price (High to Low)" />
+
+    </RadioGroup>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rg"
         tools:listitem="@layout/available_apartments_list_item" />
 
     <ProgressBar

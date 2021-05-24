@@ -12,13 +12,13 @@
         <activity android:name=".AppointmentsActivity"></activity>
         <activity android:name=".MyApartments" />
         <activity android:name=".AddApartmentActivity" />
-        <activity android:name=".HomeActivity" />
+        <activity android:name=".RegisterActivity" />
         <activity android:name=".EmailVerificationActivity" />
         <activity
             android:name=".SignInActivity"
             android:label="@string/sign_in" />
         <activity android:name=".SplashActivity" />
-        <activity android:name=".RegisterActivity">
+        <activity android:name=".HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
