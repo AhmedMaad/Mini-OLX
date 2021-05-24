@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,9 +22,11 @@ import com.example.miniolx.data.ApartmentModel;
 import com.example.miniolx.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
@@ -31,7 +34,8 @@ public class HomeActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private EditText searchET;
-    private List<ApartmentModel> apartments;
+    private List<ApartmentModel> apartments = new ArrayList<>();
+    private String searchQuery = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,17 +64,19 @@ public class HomeActivity extends AppCompatActivity {
         searchET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                //call filter by name
+                searchQuery = s.toString().toLowerCase();
+                progressBar.setVisibility(View.VISIBLE);
+                apartments.clear();
+                Log.d("trace", "Loading data from text change listener");
+                loadData();
             }
         });
 
@@ -107,7 +113,9 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        apartments.clear();
         progressBar.setVisibility(View.VISIBLE);
+        Log.d("trace", "Loading data from (on Resume)");
         loadData();
     }
 
@@ -118,8 +126,21 @@ public class HomeActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        apartments = queryDocumentSnapshots.toObjects(ApartmentModel.class);
+                    public void onSuccess(QuerySnapshot snapshots) {
+                        if (searchQuery.isEmpty())
+                            apartments = snapshots.toObjects(ApartmentModel.class);
+                        else {
+                            apartments.clear();
+                            List<DocumentSnapshot> docs = snapshots.getDocuments();
+                            for (int i = 0; i < docs.size(); ++i) {
+                                if (docs.get(i).getString("address").toLowerCase()
+                                        .equals(searchQuery)) {
+                                    Log.d("trace", "query: " + searchQuery + ", real data: " +
+                                            docs.get(i).getString("address"));
+                                    apartments.add(docs.get(i).toObject(ApartmentModel.class));
+                                }
+                            }
+                        }
                         showApartments();
                     }
                 });

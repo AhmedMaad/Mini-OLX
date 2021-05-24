@@ -106,6 +106,8 @@ public class AddApartmentActivity extends AppCompatActivity
     }
 
     public void uploadApartment(View view) {
+        view.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
         uploadImage();
     }
 
@@ -143,10 +145,6 @@ public class AddApartmentActivity extends AppCompatActivity
     }
 
     private void makeFinalUploadStep(Uri imageUri) {
-
-        Button uploadBtn = findViewById(R.id.btn_upload);
-        uploadBtn.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
 
         String address = addressET.getText().toString();
         double area = Double.parseDouble(areaET.getText().toString());
