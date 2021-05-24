@@ -12,4 +12,10 @@
         android:title="My Apartments"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/item_appointments"
+        android:icon="@drawable/ic_appointments"
+        android:title="My Appointments"
+        app:showAsAction="ifRoom" />
+
 </menu>

@@ -92,6 +92,7 @@ public class SignInActivity extends AppCompatActivity {
                             Log.d("trace", "Email found: " + user.getEmail());
                             if (user.isEmailVerified()) {
                                 //Go to home page
+                                Util.U_ID = user.getUid();
                                 Intent intent = new Intent(SignInActivity.this
                                         , HomeActivity.class);
                                 startActivity(intent);

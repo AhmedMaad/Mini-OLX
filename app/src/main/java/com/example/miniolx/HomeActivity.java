@@ -18,6 +18,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        setTitle("Available Apartments");
     }
 
     @Override
@@ -36,15 +37,20 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(i);
                 finish();
                 return true;
+
             case R.id.item_my_apartments:
                 startActivity(new Intent(this, MyApartments.class));
+                return true;
+
+            case R.id.item_appointments:
+                startActivity(new Intent(this, AppointmentsActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void openAddProductActivity(View view) {
-        Intent i = new Intent(this, AddProductActivity.class);
+        Intent i = new Intent(this, AddApartmentActivity.class);
         startActivity(i);
     }
 }

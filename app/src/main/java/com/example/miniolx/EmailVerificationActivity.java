@@ -50,6 +50,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
                         FirebaseUser user = task.getResult().getUser();
                         Log.d("json", "Email found: " + user.getEmail());
                         if (user.isEmailVerified()) {
+                            Util.U_ID = user.getUid();
                             //Go to home page
                             Intent intent = new Intent(EmailVerificationActivity.this
                                     , HomeActivity.class);
