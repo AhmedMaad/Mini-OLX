@@ -1,4 +1,4 @@
-package com.example.miniolx;
+package com.example.miniolx.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +12,10 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.miniolx.R;
+import com.example.miniolx.data.UserModel;
+import com.example.miniolx.data.Util;
+import com.example.miniolx.data.Validation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;

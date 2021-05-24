@@ -4,13 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddApartmentActivity">
+    tools:context=".activities.AddApartmentActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
+
+        <ImageButton
+            android:id="@+id/ib"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_gravity="center"
+            android:onClick="chooseApartmentPicture"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_add_photo" />
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -176,7 +185,7 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/btn_upload_research"
+            android:id="@+id/btn_upload"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"

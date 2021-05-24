@@ -9,16 +9,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MiniOLX">
-        <activity android:name=".AppointmentsActivity"></activity>
-        <activity android:name=".MyApartments" />
-        <activity android:name=".AddApartmentActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".EmailVerificationActivity" />
+        <activity android:name=".activities.AppointmentsActivity"/>
+        <activity android:name=".activities.MyApartments" />
+        <activity android:name=".activities.AddApartmentActivity" />
+        <activity android:name=".activities.RegisterActivity" />
+        <activity android:name=".activities.EmailVerificationActivity" />
         <activity
-            android:name=".SignInActivity"
+            android:name=".activities.HomeActivity"
             android:label="@string/sign_in" />
-        <activity android:name=".SplashActivity" />
-        <activity android:name=".HomeActivity">
+        <activity android:name=".activities.SplashActivity" />
+        <activity android:name=".activities.SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

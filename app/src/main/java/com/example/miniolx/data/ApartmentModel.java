@@ -1,4 +1,4 @@
-package com.example.miniolx;
+package com.example.miniolx.data;
 
 import java.util.ArrayList;
 
@@ -14,13 +14,14 @@ public class ApartmentModel {
     private String rentType;
     private String userID;
     private ArrayList<String> availableTimes;
+    private String picture;
 
     public ApartmentModel() {
     }
 
     public ApartmentModel(String address, double area, int roomsNo, int bathroomsNo, int kitchenNo
             , String viewDescription, int floorNo, String rentType, String userID
-            , ArrayList<String> availableTimes) {
+            , ArrayList<String> availableTimes, String picture) {
         this.address = address;
         this.area = area;
         this.roomsNo = roomsNo;
@@ -31,6 +32,7 @@ public class ApartmentModel {
         this.rentType = rentType;
         this.userID = userID;
         this.availableTimes = availableTimes;
+        this.picture = picture;
     }
 
     public String getAddress() {
@@ -71,5 +73,9 @@ public class ApartmentModel {
 
     public ArrayList<String> getAvailableTimes() {
         return availableTimes;
+    }
+
+    public String getPicture() {
+        return picture;
     }
 }

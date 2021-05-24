@@ -1,4 +1,4 @@
-package com.example.miniolx;
+package com.example.miniolx.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,14 +16,22 @@ import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.example.miniolx.adapters.AvailableApartmentsAdapter;
+import com.example.miniolx.data.ApartmentModel;
+import com.example.miniolx.R;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private EditText searchET;
-
+    private List<ApartmentModel> apartments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +46,7 @@ public class HomeActivity extends AppCompatActivity {
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId){
+                switch (checkedId) {
                     case R.id.rb_low_to_high:
                         //call filter from low to high method
                         break;
@@ -48,6 +56,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
+
         searchET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -93,6 +102,33 @@ public class HomeActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        progressBar.setVisibility(View.VISIBLE);
+        loadData();
+    }
+
+    private void loadData() {
+        FirebaseFirestore
+                .getInstance()
+                .collection("apartments")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        apartments = queryDocumentSnapshots.toObjects(ApartmentModel.class);
+                        showApartments();
+                    }
+                });
+    }
+
+    private void showApartments() {
+        progressBar.setVisibility(View.GONE);
+        AvailableApartmentsAdapter adapter = new AvailableApartmentsAdapter(apartments, this);
+        recyclerView.setAdapter(adapter);
     }
 
     public void openAddProductActivity(View view) {

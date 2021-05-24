@@ -1,8 +1,10 @@
-package com.example.miniolx;
+package com.example.miniolx.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.miniolx.R;
 
 public class MyApartments extends AppCompatActivity {
 

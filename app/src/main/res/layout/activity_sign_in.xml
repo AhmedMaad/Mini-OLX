@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         android:padding="8dp"
-        tools:context=".SignInActivity">
+        tools:context=".activities.SignInActivity">
 
         <ImageView
             android:id="@+id/iv_person"

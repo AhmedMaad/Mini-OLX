@@ -1,4 +1,4 @@
-package com.example.miniolx;
+package com.example.miniolx.data;
 
 public class Validation {
 

@@ -1,22 +1,34 @@
-package com.example.miniolx;
+package com.example.miniolx.activities;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.miniolx.DateChooserDialog;
+import com.example.miniolx.R;
+import com.example.miniolx.data.ApartmentModel;
+import com.example.miniolx.data.Util;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -38,6 +50,8 @@ public class AddApartmentActivity extends AppCompatActivity
     private String chosenRentType;
     private ArrayList<String> availableTimes = new ArrayList<>();
     private TextInputEditText timeET;
+    private ImageButton apartmentIB;
+    private Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +67,7 @@ public class AddApartmentActivity extends AppCompatActivity
         floorNoET = findViewById(R.id.et_floor_number);
         progressBar = findViewById(R.id.pb);
         timeET = findViewById(R.id.et_available_time);
+        apartmentIB = findViewById(R.id.ib);
 
         String[] rentTypes = {"Weekly", "Monthly"};
         Spinner spinner = findViewById(R.id.spinner);
@@ -75,10 +90,64 @@ public class AddApartmentActivity extends AppCompatActivity
 
     }
 
-    public void uploadApartment(View view) {
+    public void chooseApartmentPicture(View view) {
+        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+        i.setType("image/*");
+        startActivityForResult(i, 0);
+    }
 
-        view.setVisibility(View.GONE);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            imageUri = data.getData();
+            apartmentIB.setImageURI(imageUri);
+        }
+    }
+
+    public void uploadApartment(View view) {
+        uploadImage();
+    }
+
+    private void uploadImage() {
+        //Accessing Cloud Storage bucket by creating an instance of FirebaseStorage
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        //Create a reference to upload, download, or delete a file
+
+        Calendar now = Calendar.getInstance();
+        int year = now.get(Calendar.YEAR);
+        int month = now.get(Calendar.MONTH) + 1; // Note: zero based!
+        int day = now.get(Calendar.DAY_OF_MONTH);
+        int hour = now.get(Calendar.HOUR_OF_DAY);
+        int minute = now.get(Calendar.MINUTE);
+        int second = now.get(Calendar.SECOND);
+        int millis = now.get(Calendar.MILLISECOND);
+        String imageName = "image: " + day + '-' + month + '-' + year + ' ' + hour + ':' + minute
+                + ':' + second + '.' + millis;
+
+        StorageReference storageRef = storage.getReference().child(imageName);
+        storageRef.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    Log.d("trace", "Image uploaded");
+                    getLinkForUploadedImage(storageRef.getDownloadUrl());
+                });
+    }
+
+    //Getting a download link after uploading a picture
+    private void getLinkForUploadedImage(Task<Uri> task) {
+        Log.d("trace", "Getting image download link");
+        task.addOnSuccessListener(uri -> {
+            Log.d("trace", "Image Link: " + uri);
+            makeFinalUploadStep(uri);
+        });
+    }
+
+    private void makeFinalUploadStep(Uri imageUri) {
+
+        Button uploadBtn = findViewById(R.id.btn_upload);
+        uploadBtn.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
+
         String address = addressET.getText().toString();
         double area = Double.parseDouble(areaET.getText().toString());
         int rooms = Integer.parseInt(roomsNoET.getText().toString());
@@ -88,7 +157,8 @@ public class AddApartmentActivity extends AppCompatActivity
         int floorNo = Integer.parseInt(floorNoET.getText().toString());
 
         ApartmentModel apartment = new ApartmentModel(address, area, rooms, bathrooms
-                , kitchens, viewDescription, floorNo, chosenRentType, Util.U_ID, availableTimes);
+                , kitchens, viewDescription, floorNo, chosenRentType, Util.U_ID, availableTimes
+                , imageUri.toString());
 
         FirebaseFirestore
                 .getInstance()
@@ -101,7 +171,6 @@ public class AddApartmentActivity extends AppCompatActivity
                         finish();
                     }
                 });
-
     }
 
     public void pickDate(View view) {
@@ -128,4 +197,5 @@ public class AddApartmentActivity extends AppCompatActivity
         }
 
     }
+
 }
