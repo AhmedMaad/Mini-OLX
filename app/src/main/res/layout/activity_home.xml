@@ -37,13 +37,13 @@
         app:layout_constraintTop_toBottomOf="@id/et_search_place">
 
         <RadioButton
-            android:id="@+id/rb_high_to_low"
+            android:id="@+id/rb_low_to_high"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Price (Low to High)" />
 
         <RadioButton
-            android:id="@+id/rb_low_to_high"
+            android:id="@+id/rb_high_to_low"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Price (High to Low)" />
@@ -53,9 +53,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rg"
         tools:listitem="@layout/available_apartments_list_item" />
 

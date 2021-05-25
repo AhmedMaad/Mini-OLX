@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -27,6 +28,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
@@ -36,6 +39,7 @@ public class HomeActivity extends AppCompatActivity {
     private EditText searchET;
     private List<ApartmentModel> apartments = new ArrayList<>();
     private String searchQuery = "";
+    private RadioGroup rg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,16 +50,20 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.rv);
         progressBar = findViewById(R.id.pb);
         searchET = findViewById(R.id.et_search_place);
-        RadioGroup rg = findViewById(R.id.rg);
+        rg = findViewById(R.id.rg);
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.rb_low_to_high:
-                        //call filter from low to high method
+                        Collections.sort(apartments);
+                        Log.d("trace", "low to high: " + apartments);
+                        showApartments();
                         break;
                     case R.id.rb_high_to_low:
-                        //call filter from high to low method
+                        Collections.sort(apartments, Collections.reverseOrder());
+                        Log.d("trace", "high to low: " + apartments);
+                        showApartments();
                         break;
                 }
             }
@@ -113,6 +121,13 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        searchET.getText().clear();
+
+        int selectedRb = rg.getCheckedRadioButtonId();
+        if (selectedRb != -1) {
+            RadioButton rb = findViewById(selectedRb);
+            rb.setChecked(false);
+        }
         apartments.clear();
         progressBar.setVisibility(View.VISIBLE);
         Log.d("trace", "Loading data from (on Resume)");

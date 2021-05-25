@@ -84,7 +84,8 @@ public class SignInActivity extends AppCompatActivity {
 
     public void loginWithFirebase() {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        mAuth.signInWithEmailAndPassword(email, password)
+        //TODO: Change the following line to this "mAuth.signInWithEmailAndPassword(email, password)"
+        mAuth.signInWithEmailAndPassword("atef.ahmed1341@gmail.com", "123456")
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {

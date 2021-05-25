@@ -23,7 +23,7 @@
             tools:src="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/tv"
+            android:id="@+id/tv_address"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -35,6 +35,16 @@
             app:layout_constraintStart_toEndOf="@id/iv_product"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/tv_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@id/tv_address"
+            app:layout_constraintTop_toBottomOf="@id/tv_address"
+            tools:text="@tools:sample/us_zipcodes" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

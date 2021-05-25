@@ -2,7 +2,7 @@ package com.example.miniolx.data;
 
 import java.util.ArrayList;
 
-public class ApartmentModel {
+public class ApartmentModel implements Comparable<ApartmentModel> {
 
     private String address;
     private double area;
@@ -15,13 +15,14 @@ public class ApartmentModel {
     private String userID;
     private ArrayList<String> availableTimes;
     private String picture;
+    private double price;
 
     public ApartmentModel() {
     }
 
     public ApartmentModel(String address, double area, int roomsNo, int bathroomsNo, int kitchenNo
             , String viewDescription, int floorNo, String rentType, String userID
-            , ArrayList<String> availableTimes, String picture) {
+            , ArrayList<String> availableTimes, String picture, double price) {
         this.address = address;
         this.area = area;
         this.roomsNo = roomsNo;
@@ -33,6 +34,7 @@ public class ApartmentModel {
         this.userID = userID;
         this.availableTimes = availableTimes;
         this.picture = picture;
+        this.price = price;
     }
 
     public String getAddress() {
@@ -78,4 +80,19 @@ public class ApartmentModel {
     public String getPicture() {
         return picture;
     }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    @Override
+    public int compareTo(ApartmentModel o) {
+        return this.getPrice().compareTo(o.getPrice());
+    }
+
+    @Override
+    public String toString() {
+        return "Price List [" + price + "]";
+    }
+
 }

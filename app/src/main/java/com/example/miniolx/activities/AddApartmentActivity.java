@@ -46,6 +46,7 @@ public class AddApartmentActivity extends AppCompatActivity
     private TextInputEditText kitchenNoET;
     private TextInputEditText viewDescriptionET;
     private TextInputEditText floorNoET;
+    private TextInputEditText priceET;
     private ProgressBar progressBar;
     private String chosenRentType;
     private ArrayList<String> availableTimes = new ArrayList<>();
@@ -65,6 +66,7 @@ public class AddApartmentActivity extends AppCompatActivity
         kitchenNoET = findViewById(R.id.et_kitchen_number);
         viewDescriptionET = findViewById(R.id.et_view_description);
         floorNoET = findViewById(R.id.et_floor_number);
+        priceET = findViewById(R.id.et_price);
         progressBar = findViewById(R.id.pb);
         timeET = findViewById(R.id.et_available_time);
         apartmentIB = findViewById(R.id.ib);
@@ -153,10 +155,11 @@ public class AddApartmentActivity extends AppCompatActivity
         int kitchens = Integer.parseInt(kitchenNoET.getText().toString());
         String viewDescription = viewDescriptionET.getText().toString();
         int floorNo = Integer.parseInt(floorNoET.getText().toString());
+        double price = Double.parseDouble(priceET.getText().toString());
 
         ApartmentModel apartment = new ApartmentModel(address, area, rooms, bathrooms
                 , kitchens, viewDescription, floorNo, chosenRentType, Util.U_ID, availableTimes
-                , imageUri.toString());
+                , imageUri.toString(), price);
 
         FirebaseFirestore
                 .getInstance()
