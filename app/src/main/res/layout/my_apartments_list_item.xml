@@ -7,6 +7,7 @@
     android:layout_margin="8dp"
     android:checkable="true"
     android:elevation="16dp"
+    android:id="@+id/parent"
     app:cardCornerRadius="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout

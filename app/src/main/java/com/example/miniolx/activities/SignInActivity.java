@@ -85,7 +85,7 @@ public class SignInActivity extends AppCompatActivity {
     public void loginWithFirebase() {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         //TODO: Change the following line to this "mAuth.signInWithEmailAndPassword(email, password)"
-        mAuth.signInWithEmailAndPassword("atef.ahmed1341@gmail.com", "123456")
+        mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -95,6 +95,7 @@ public class SignInActivity extends AppCompatActivity {
                             if (user.isEmailVerified()) {
                                 //Go to home page
                                 Util.U_ID = user.getUid();
+                                Log.d("trace", "User ID: " + Util.U_ID);
                                 Intent intent = new Intent(SignInActivity.this
                                         , HomeActivity.class);
                                 startActivity(intent);

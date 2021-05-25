@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.miniolx.adapters.AvailableApartmentsAdapter;
 import com.example.miniolx.data.ApartmentModel;
 import com.example.miniolx.R;
+import com.example.miniolx.data.Util;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -46,6 +47,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         setTitle("Available Apartments");
+        Log.d("trace", "User ID: " + Util.U_ID);
 
         recyclerView = findViewById(R.id.rv);
         progressBar = findViewById(R.id.pb);
