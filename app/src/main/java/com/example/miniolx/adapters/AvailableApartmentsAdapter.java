@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.miniolx.R;
 import com.example.miniolx.data.ApartmentModel;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.List;
 
@@ -20,6 +21,15 @@ public class AvailableApartmentsAdapter
 
     private List<ApartmentModel> apartments;
     private Activity activity;
+    private OnItemClickListener onItemClickListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
 
     public AvailableApartmentsAdapter(List<ApartmentModel> apartments, Activity activity) {
         this.apartments = apartments;
@@ -32,7 +42,7 @@ public class AvailableApartmentsAdapter
         View v = activity
                 .getLayoutInflater()
                 .inflate(R.layout.available_apartments_list_item, parent, false);
-        return new MVH(v);
+        return new MVH(v, onItemClickListener);
     }
 
     @Override
@@ -64,12 +74,22 @@ public class AvailableApartmentsAdapter
         private ImageView productIV;
         private TextView productAddressTV;
         private TextView productPriceTV;
+        private MaterialCardView cardView;
 
-        public MVH(@NonNull View itemView) {
+        public MVH(@NonNull View itemView, OnItemClickListener clickListener) {
             super(itemView);
             productAddressTV = itemView.findViewById(R.id.tv_address);
             productIV = itemView.findViewById(R.id.iv_product);
             productPriceTV = itemView.findViewById(R.id.tv_price);
+            cardView = itemView.findViewById(R.id.parent);
+
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickListener.onItemClick(getAdapterPosition());
+                }
+            });
+
         }
 
     }

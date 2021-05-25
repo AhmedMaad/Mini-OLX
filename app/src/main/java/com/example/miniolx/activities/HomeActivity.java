@@ -165,6 +165,14 @@ public class HomeActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
         AvailableApartmentsAdapter adapter = new AvailableApartmentsAdapter(apartments, this);
         recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(new AvailableApartmentsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Intent i = new Intent(HomeActivity.this, ApartmentDetailsActivity.class);
+                i.putExtra("apartment", apartments.get(position));
+                startActivity(i);
+            }
+        });
     }
 
     public void openAddProductActivity(View view) {

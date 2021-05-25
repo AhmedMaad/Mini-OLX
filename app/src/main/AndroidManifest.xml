@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MiniOLX">
-        <activity android:name=".activities.AppointmentsActivity"/>
+        <activity android:name=".activities.ApartmentDetailsActivity"></activity>
+        <activity android:name=".activities.AppointmentsActivity" />
         <activity android:name=".activities.MyApartments" />
         <activity android:name=".activities.AddApartmentActivity" />
         <activity android:name=".activities.RegisterActivity" />

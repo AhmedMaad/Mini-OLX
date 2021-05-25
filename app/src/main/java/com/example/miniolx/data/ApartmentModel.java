@@ -1,8 +1,11 @@
 package com.example.miniolx.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
-public class ApartmentModel implements Comparable<ApartmentModel> {
+public class ApartmentModel implements Comparable<ApartmentModel>, Parcelable {
 
     private String address;
     private double area;
@@ -36,6 +39,33 @@ public class ApartmentModel implements Comparable<ApartmentModel> {
         this.picture = picture;
         this.price = price;
     }
+
+    protected ApartmentModel(Parcel in) {
+        address = in.readString();
+        area = in.readDouble();
+        roomsNo = in.readInt();
+        bathroomsNo = in.readInt();
+        kitchenNo = in.readInt();
+        viewDescription = in.readString();
+        floorNo = in.readInt();
+        rentType = in.readString();
+        userID = in.readString();
+        availableTimes = in.createStringArrayList();
+        picture = in.readString();
+        price = in.readDouble();
+    }
+
+    public static final Creator<ApartmentModel> CREATOR = new Creator<ApartmentModel>() {
+        @Override
+        public ApartmentModel createFromParcel(Parcel in) {
+            return new ApartmentModel(in);
+        }
+
+        @Override
+        public ApartmentModel[] newArray(int size) {
+            return new ApartmentModel[size];
+        }
+    };
 
     public String getAddress() {
         return address;
@@ -95,4 +125,24 @@ public class ApartmentModel implements Comparable<ApartmentModel> {
         return "Price List [" + price + "]";
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(address);
+        dest.writeDouble(area);
+        dest.writeInt(roomsNo);
+        dest.writeInt(bathroomsNo);
+        dest.writeInt(kitchenNo);
+        dest.writeString(viewDescription);
+        dest.writeInt(floorNo);
+        dest.writeString(rentType);
+        dest.writeString(userID);
+        dest.writeStringList(availableTimes);
+        dest.writeString(picture);
+        dest.writeDouble(price);
+    }
 }
