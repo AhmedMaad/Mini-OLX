@@ -169,6 +169,7 @@ public class AddApartmentActivity extends AppCompatActivity
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
+                        documentReference.update("apartmentID", documentReference.getId());
                         Toast.makeText(AddApartmentActivity.this, "Apartment Added Successfully", Toast.LENGTH_SHORT).show();
                         finish();
                     }

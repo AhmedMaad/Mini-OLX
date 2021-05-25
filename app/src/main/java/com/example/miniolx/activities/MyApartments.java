@@ -7,14 +7,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.miniolx.R;
 import com.example.miniolx.adapters.MyApartmentsAdapter;
 import com.example.miniolx.data.ApartmentModel;
 import com.example.miniolx.data.Util;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +28,7 @@ public class MyApartments extends AppCompatActivity {
     private List<ApartmentModel> apartments;
     private ProgressBar progressBar;
     private List<ApartmentModel> apartmentsToShow = new ArrayList<>();
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +37,9 @@ public class MyApartments extends AppCompatActivity {
         setTitle("My Apartments");
         Log.d("trace", "User ID: " + Util.U_ID);
 
-        FirebaseFirestore
-                .getInstance()
+        db = FirebaseFirestore.getInstance();
+
+        db
                 .collection("apartments")
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -58,9 +64,41 @@ public class MyApartments extends AppCompatActivity {
         adapter.setOnDeleteItemClickListener(new MyApartmentsAdapter.OnDeleteItemClickListener() {
             @Override
             public void onItemClick(int position) {
-
+                db
+                        .collection("apartments")
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot snapshots) {
+                                List<DocumentSnapshot> s = snapshots.getDocuments();
+                                for (int i = 0; i < s.size(); ++i) {
+                                    Log.d("trace", "apartment id: " + apartmentsToShow.get(position).getApartmentID());
+                                    Log.d("trace", "apartment id: " + s.get(i).getId());
+                                    if (apartmentsToShow.get(position).getApartmentID()
+                                            .equals(s.get(i).getId())) {
+                                        deleteApartment(s.get(i).getId());
+                                        apartmentsToShow.remove(position);
+                                        adapter.notifyDataSetChanged();
+                                        break;
+                                    }
+                                }
+                            }
+                        });
             }
         });
+    }
+
+    private void deleteApartment(String id) {
+        db
+                .collection("apartments")
+                .document(id)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(MyApartments.this, "Apartment Deleted Successfully", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 }

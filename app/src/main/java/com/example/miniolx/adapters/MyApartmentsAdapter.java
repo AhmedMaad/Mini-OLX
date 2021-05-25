@@ -81,10 +81,11 @@ public class MyApartmentsAdapter
             productAddressTV = itemView.findViewById(R.id.tv);
             cardView = itemView.findViewById(R.id.parent);
 
-            cardView.setOnClickListener(new View.OnClickListener() {
+            cardView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View v) {
+                public boolean onLongClick(View v) {
                     clickListener.onItemClick(getAdapterPosition());
+                    return true;
                 }
             });
 
