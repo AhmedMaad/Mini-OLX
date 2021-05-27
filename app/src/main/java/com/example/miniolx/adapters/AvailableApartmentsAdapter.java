@@ -60,7 +60,8 @@ public class AvailableApartmentsAdapter
                 .placeholder(R.drawable.ic_download)
                 .into(holder.productIV);
 
-        holder.productPriceTV.setText(String.valueOf(apartments.get(position).getPrice()));
+        String price = apartments.get(position).getPrice() + " L.E.";
+        holder.productPriceTV.setText(price);
 
     }
 
