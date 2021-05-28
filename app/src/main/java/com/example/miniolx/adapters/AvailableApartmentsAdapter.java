@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -24,7 +25,7 @@ public class AvailableApartmentsAdapter
     private OnItemClickListener onItemClickListener;
 
     public interface OnItemClickListener {
-        void onItemClick(int position);
+        void onItemClick(int position, ImageView apartment);
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -63,6 +64,9 @@ public class AvailableApartmentsAdapter
         String price = apartments.get(position).getPrice() + " L.E.";
         holder.productPriceTV.setText(price);
 
+        //Transition name has to be unique
+        ViewCompat.setTransitionName(holder.productIV, apartments.get(position).getApartmentID());
+
     }
 
     @Override
@@ -87,7 +91,7 @@ public class AvailableApartmentsAdapter
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    clickListener.onItemClick(getAdapterPosition());
+                    clickListener.onItemClick(getAdapterPosition(), productIV);
                 }
             });
 

@@ -2,9 +2,12 @@ package com.example.miniolx.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -132,6 +136,7 @@ public class HomeActivity extends AppCompatActivity {
         }
         apartments.clear();
         progressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.INVISIBLE);
         Log.d("trace", "Loading data from (on Resume)");
         loadData();
     }
@@ -144,6 +149,7 @@ public class HomeActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot snapshots) {
+                        recyclerView.setVisibility(View.VISIBLE);
                         if (searchQuery.isEmpty())
                             apartments = snapshots.toObjects(ApartmentModel.class);
                         else {
@@ -169,10 +175,14 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(new AvailableApartmentsAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(int position) {
+            public void onItemClick(int position, ImageView productImage) {
                 Intent i = new Intent(HomeActivity.this, ApartmentDetailsActivity.class);
                 i.putExtra("apartment", apartments.get(position));
-                startActivity(i);
+                i.putExtra("imageTransition", ViewCompat.getTransitionName(productImage));
+                ActivityOptionsCompat options =
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(HomeActivity.this
+                                , productImage, ViewCompat.getTransitionName(productImage));
+                startActivity(i, options.toBundle());
             }
         });
     }

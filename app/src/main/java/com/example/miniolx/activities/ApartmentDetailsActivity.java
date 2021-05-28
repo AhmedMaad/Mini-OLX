@@ -61,8 +61,12 @@ public class ApartmentDetailsActivity extends AppCompatActivity {
 
         apartment = getIntent().getParcelableExtra("apartment");
 
+
+        String imageTransitionName = getIntent().getStringExtra("imageTransition");
+        apartmentIV.setTransitionName(imageTransitionName);
         Glide.with(this).load(apartment.getPicture()).placeholder(R.drawable.ic_download)
                 .into(apartmentIV);
+
         addressTV.setText(apartment.getAddress());
         areaTV.setText(String.valueOf(apartment.getArea()));
         roomsNoTV.setText(String.valueOf(apartment.getRoomsNo()));
