@@ -1,4 +1,4 @@
-package com.example.miniolx;
+package com.example.miniolx.dialogs;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;

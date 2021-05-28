@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="#8BC34A"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        tools:text="(Sat) 15-5-2021" />
+
+    <TextView
+        android:id="@+id/tv_mobile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        tools:text="01003535435" />
+
+    <TextView
+        android:id="@+id/cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:text="cancel"
+        android:textColor="@android:color/holo_red_dark"
+        android:textStyle="bold" />
+
+</LinearLayout>

@@ -20,13 +20,14 @@ public class ApartmentModel implements Comparable<ApartmentModel>, Parcelable {
     private String picture;
     private double price;
     private String apartmentID;
+    private String mobile;
 
     public ApartmentModel() {
     }
 
     public ApartmentModel(String address, double area, int roomsNo, int bathroomsNo, int kitchenNo
             , String viewDescription, int floorNo, String rentType, String userID
-            , ArrayList<String> availableTimes, String picture, double price) {
+            , ArrayList<String> availableTimes, String picture, double price, String mobile) {
         this.address = address;
         this.area = area;
         this.roomsNo = roomsNo;
@@ -39,6 +40,7 @@ public class ApartmentModel implements Comparable<ApartmentModel>, Parcelable {
         this.availableTimes = availableTimes;
         this.picture = picture;
         this.price = price;
+        this.mobile = mobile;
     }
 
     protected ApartmentModel(Parcel in) {
@@ -55,6 +57,7 @@ public class ApartmentModel implements Comparable<ApartmentModel>, Parcelable {
         picture = in.readString();
         price = in.readDouble();
         apartmentID = in.readString();
+        mobile = in.readString();
     }
 
     public static final Creator<ApartmentModel> CREATOR = new Creator<ApartmentModel>() {
@@ -125,6 +128,10 @@ public class ApartmentModel implements Comparable<ApartmentModel>, Parcelable {
         return apartmentID;
     }
 
+    public String getMobile() {
+        return mobile;
+    }
+
     @Override
     public int compareTo(ApartmentModel o) {
         return this.getPrice().compareTo(o.getPrice());
@@ -155,5 +162,6 @@ public class ApartmentModel implements Comparable<ApartmentModel>, Parcelable {
         dest.writeString(picture);
         dest.writeDouble(price);
         dest.writeString(apartmentID);
+        dest.writeString(mobile);
     }
 }

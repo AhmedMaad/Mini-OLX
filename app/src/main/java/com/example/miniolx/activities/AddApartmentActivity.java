@@ -11,14 +11,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.miniolx.DateChooserDialog;
+import com.example.miniolx.dialogs.DateChooserDialog;
 import com.example.miniolx.R;
 import com.example.miniolx.data.ApartmentModel;
 import com.example.miniolx.data.Util;
@@ -47,6 +46,7 @@ public class AddApartmentActivity extends AppCompatActivity
     private TextInputEditText viewDescriptionET;
     private TextInputEditText floorNoET;
     private TextInputEditText priceET;
+    private TextInputEditText mobileET;
     private ProgressBar progressBar;
     private String chosenRentType;
     private ArrayList<String> availableTimes = new ArrayList<>();
@@ -68,6 +68,7 @@ public class AddApartmentActivity extends AppCompatActivity
         viewDescriptionET = findViewById(R.id.et_view_description);
         floorNoET = findViewById(R.id.et_floor_number);
         priceET = findViewById(R.id.et_price);
+        mobileET = findViewById(R.id.et_mobile);
         progressBar = findViewById(R.id.pb);
         timeET = findViewById(R.id.et_available_time);
         apartmentIB = findViewById(R.id.ib);
@@ -157,10 +158,11 @@ public class AddApartmentActivity extends AppCompatActivity
         String viewDescription = viewDescriptionET.getText().toString();
         int floorNo = Integer.parseInt(floorNoET.getText().toString());
         double price = Double.parseDouble(priceET.getText().toString());
+        String mobile = mobileET.getText().toString();
 
         ApartmentModel apartment = new ApartmentModel(address, area, rooms, bathrooms
                 , kitchens, viewDescription, floorNo, chosenRentType, Util.U_ID, availableTimes
-                , imageUri.toString(), price);
+                , imageUri.toString(), price, mobile);
 
         FirebaseFirestore
                 .getInstance()
