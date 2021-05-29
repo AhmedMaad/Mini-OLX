@@ -1,6 +1,8 @@
 package com.example.miniolx.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.miniolx.R;
+import com.example.miniolx.adapters.ApartmentPictureAdapter;
 import com.example.miniolx.data.ApartmentModel;
 import com.example.miniolx.data.AppointmentModel;
 import com.example.miniolx.data.Util;
@@ -28,7 +31,6 @@ import java.util.Map;
 
 public class ApartmentDetailsActivity extends AppCompatActivity {
 
-    private ImageView apartmentIV;
     private TextView addressTV;
     private TextView areaTV;
     private TextView roomsNoTV;
@@ -47,7 +49,6 @@ public class ApartmentDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_apartment_details);
         setTitle("Apartment Details");
 
-        apartmentIV = findViewById(R.id.iv_apartment);
         addressTV = findViewById(R.id.tv_address);
         areaTV = findViewById(R.id.tv_area);
         roomsNoTV = findViewById(R.id.tv_rooms_number);
@@ -61,11 +62,13 @@ public class ApartmentDetailsActivity extends AppCompatActivity {
 
         apartment = getIntent().getParcelableExtra("apartment");
 
-
-        String imageTransitionName = getIntent().getStringExtra("imageTransition");
-        apartmentIV.setTransitionName(imageTransitionName);
-        Glide.with(this).load(apartment.getPicture()).placeholder(R.drawable.ic_download)
-                .into(apartmentIV);
+        RecyclerView rv = findViewById(R.id.rv_pictures);
+        LinearLayoutManager manager =
+                new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
+        rv.setLayoutManager(manager);
+        ApartmentPictureAdapter picturesAdapter =
+                new ApartmentPictureAdapter(this, apartment.getPictures());
+        rv.setAdapter(picturesAdapter);
 
         addressTV.setText(apartment.getAddress());
         areaTV.setText(String.valueOf(apartment.getArea()));

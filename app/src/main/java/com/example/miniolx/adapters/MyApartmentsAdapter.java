@@ -57,7 +57,7 @@ public class MyApartmentsAdapter
 
         Glide
                 .with(activity)
-                .load(apartments.get(position).getPicture())
+                .load(apartments.get(position).getPictures().get(0))
                 .placeholder(R.drawable.ic_download)
                 .into(holder.productIV);
 

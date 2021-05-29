@@ -18,7 +18,7 @@ public class ApartmentDialog extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder
-                .setMessage("This is your apartment, you cannot schedule a time for your self.")
+                .setMessage("This is your apartment, you cannot schedule a time for yourself.")
                 .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

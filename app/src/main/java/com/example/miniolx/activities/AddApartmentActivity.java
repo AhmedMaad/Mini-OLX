@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -53,6 +54,9 @@ public class AddApartmentActivity extends AppCompatActivity
     private TextInputEditText timeET;
     private ImageButton apartmentIB;
     private Uri imageUri;
+    private ArrayList<Uri> images = new ArrayList<>();
+    private ArrayList<String> downloadLinks = new ArrayList<>();
+    private int picturesCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +101,7 @@ public class AddApartmentActivity extends AppCompatActivity
     public void chooseApartmentPicture(View view) {
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.setType("image/*");
+        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         startActivityForResult(i, 0);
     }
 
@@ -104,7 +109,17 @@ public class AddApartmentActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            imageUri = data.getData();
+            images.clear();
+            ClipData clips = data.getClipData();
+            if (clips == null) {
+                imageUri = data.getData();
+                images.add(imageUri);
+            } else {
+                for (int i = 0; i < clips.getItemCount(); ++i) {
+                    imageUri = clips.getItemAt(i).getUri();
+                    images.add(imageUri);
+                }
+            }
             apartmentIB.setImageURI(imageUri);
         }
     }
@@ -112,31 +127,34 @@ public class AddApartmentActivity extends AppCompatActivity
     public void uploadApartment(View view) {
         view.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
-        uploadImage();
+        uploadImages();
     }
 
-    private void uploadImage() {
+    private void uploadImages() {
         //Accessing Cloud Storage bucket by creating an instance of FirebaseStorage
         FirebaseStorage storage = FirebaseStorage.getInstance();
         //Create a reference to upload, download, or delete a file
 
-        Calendar now = Calendar.getInstance();
-        int year = now.get(Calendar.YEAR);
-        int month = now.get(Calendar.MONTH) + 1; // Note: zero based!
-        int day = now.get(Calendar.DAY_OF_MONTH);
-        int hour = now.get(Calendar.HOUR_OF_DAY);
-        int minute = now.get(Calendar.MINUTE);
-        int second = now.get(Calendar.SECOND);
-        int millis = now.get(Calendar.MILLISECOND);
-        String imageName = "image: " + day + '-' + month + '-' + year + ' ' + hour + ':' + minute
-                + ':' + second + '.' + millis;
+        for (Uri imageUri: images){
+            Calendar now = Calendar.getInstance();
+            int year = now.get(Calendar.YEAR);
+            int month = now.get(Calendar.MONTH) + 1; // Note: zero based!
+            int day = now.get(Calendar.DAY_OF_MONTH);
+            int hour = now.get(Calendar.HOUR_OF_DAY);
+            int minute = now.get(Calendar.MINUTE);
+            int second = now.get(Calendar.SECOND);
+            int millis = now.get(Calendar.MILLISECOND);
+            String imageName = "image: " + day + '-' + month + '-' + year + ' ' + hour + ':' + minute
+                    + ':' + second + '.' + millis;
 
-        StorageReference storageRef = storage.getReference().child(imageName);
-        storageRef.putFile(imageUri)
-                .addOnSuccessListener(taskSnapshot -> {
-                    Log.d("trace", "Image uploaded");
-                    getLinkForUploadedImage(storageRef.getDownloadUrl());
-                });
+            StorageReference storageRef = storage.getReference().child(imageName);
+            storageRef.putFile(imageUri)
+                    .addOnSuccessListener(taskSnapshot -> {
+                        Log.d("trace", "Image uploaded");
+                        getLinkForUploadedImage(storageRef.getDownloadUrl());
+                    });
+        }
+
     }
 
     //Getting a download link after uploading a picture
@@ -144,11 +162,17 @@ public class AddApartmentActivity extends AppCompatActivity
         Log.d("trace", "Getting image download link");
         task.addOnSuccessListener(uri -> {
             Log.d("trace", "Image Link: " + uri);
-            makeFinalUploadStep(uri);
+            downloadLinks.add(uri.toString());
+            ++picturesCounter;
+            if (picturesCounter == images.size()){
+                Log.d("trace", "call makeFinalUploadStep now");
+                makeFinalUploadStep();
+            }
+
         });
     }
 
-    private void makeFinalUploadStep(Uri imageUri) {
+    private void makeFinalUploadStep() {
 
         String address = addressET.getText().toString();
         double area = Double.parseDouble(areaET.getText().toString());
@@ -162,7 +186,7 @@ public class AddApartmentActivity extends AppCompatActivity
 
         ApartmentModel apartment = new ApartmentModel(address, area, rooms, bathrooms
                 , kitchens, viewDescription, floorNo, chosenRentType, Util.U_ID, availableTimes
-                , imageUri.toString(), price, mobile);
+                , downloadLinks, price, mobile);
 
         FirebaseFirestore
                 .getInstance()

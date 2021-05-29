@@ -17,7 +17,7 @@ public class ApartmentModel implements Comparable<ApartmentModel>, Parcelable {
     private String rentType;
     private String userID;
     private ArrayList<String> availableTimes;
-    private String picture;
+    private ArrayList<String> pictures;
     private double price;
     private String apartmentID;
     private String mobile;
@@ -27,7 +27,7 @@ public class ApartmentModel implements Comparable<ApartmentModel>, Parcelable {
 
     public ApartmentModel(String address, double area, int roomsNo, int bathroomsNo, int kitchenNo
             , String viewDescription, int floorNo, String rentType, String userID
-            , ArrayList<String> availableTimes, String picture, double price, String mobile) {
+            , ArrayList<String> availableTimes, ArrayList<String> pictures, double price, String mobile) {
         this.address = address;
         this.area = area;
         this.roomsNo = roomsNo;
@@ -38,7 +38,7 @@ public class ApartmentModel implements Comparable<ApartmentModel>, Parcelable {
         this.rentType = rentType;
         this.userID = userID;
         this.availableTimes = availableTimes;
-        this.picture = picture;
+        this.pictures = pictures;
         this.price = price;
         this.mobile = mobile;
     }
@@ -54,7 +54,7 @@ public class ApartmentModel implements Comparable<ApartmentModel>, Parcelable {
         rentType = in.readString();
         userID = in.readString();
         availableTimes = in.createStringArrayList();
-        picture = in.readString();
+        pictures = in.createStringArrayList();
         price = in.readDouble();
         apartmentID = in.readString();
         mobile = in.readString();
@@ -112,8 +112,8 @@ public class ApartmentModel implements Comparable<ApartmentModel>, Parcelable {
         return availableTimes;
     }
 
-    public String getPicture() {
-        return picture;
+    public ArrayList<String> getPictures() {
+        return pictures;
     }
 
     public Double getPrice() {
@@ -159,7 +159,7 @@ public class ApartmentModel implements Comparable<ApartmentModel>, Parcelable {
         dest.writeString(rentType);
         dest.writeString(userID);
         dest.writeStringList(availableTimes);
-        dest.writeString(picture);
+        dest.writeStringList(pictures);
         dest.writeDouble(price);
         dest.writeString(apartmentID);
         dest.writeString(mobile);

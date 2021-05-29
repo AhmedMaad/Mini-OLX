@@ -57,16 +57,12 @@ public class AvailableApartmentsAdapter
 
         Glide
                 .with(activity)
-                .load(apartments.get(position).getPicture())
+                .load(apartments.get(position).getPictures().get(0))
                 .placeholder(R.drawable.ic_download)
                 .into(holder.productIV);
 
         String price = apartments.get(position).getPrice() + " L.E.";
         holder.productPriceTV.setText(price);
-
-        //Transition name has to be unique
-        ViewCompat.setTransitionName(holder.productIV, apartments.get(position).getApartmentID());
-
     }
 
     @Override

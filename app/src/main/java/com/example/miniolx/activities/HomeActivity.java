@@ -178,11 +178,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onItemClick(int position, ImageView productImage) {
                 Intent i = new Intent(HomeActivity.this, ApartmentDetailsActivity.class);
                 i.putExtra("apartment", apartments.get(position));
-                i.putExtra("imageTransition", ViewCompat.getTransitionName(productImage));
-                ActivityOptionsCompat options =
-                        ActivityOptionsCompat.makeSceneTransitionAnimation(HomeActivity.this
-                                , productImage, ViewCompat.getTransitionName(productImage));
-                startActivity(i, options.toBundle());
+                startActivity(i);
             }
         });
     }
